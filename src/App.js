@@ -72,6 +72,7 @@ export default function App() {
   const [bookingEmail, setBookingEmail] = useState('');
   const [bookingMessage, setBookingMessage] = useState('');
   const [bookingSubmitted, setBookingSubmitted] = useState(false);
+  const [resultMessage, setResultMessage] = useState('');
 
   // Reference to store interval ID and prevent memory/state leaks
   const simIntervalRef = useRef(null);
@@ -265,10 +266,30 @@ def handle_event(payload):
     print("Workflow executed successfully & state written to ${customDest}!")`;
   };
 
-  const handleBookingSubmit = (e) => {
+  const handleBookingSubmit = async (e) => {
     e.preventDefault();
-    if (bookingName && bookingEmail) {
-      setBookingSubmitted(true);
+    const formData = new FormData(e.target);
+    formData.append('access_key', '0308ff1c-58bf-42e9-8f02-865eb1e9415a');
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setResultMessage('Success! Your message has been sent.');
+        setBookingSubmitted(true);
+        setBookingName('');
+        setBookingEmail('');
+        setBookingMessage('');
+      } else {
+        setResultMessage('Error submitting form. Please try again.');
+      }
+    } catch (error) {
+      console.error('Web3Forms error:', error);
+      setResultMessage('Error submitting form. Please try again.');
     }
   };
 
@@ -1131,6 +1152,11 @@ def handle_event(payload):
                     Request Process Audit
                   </button>
                 </div>
+                {resultMessage && (
+                  <p className={`mt-4 text-sm ${resultMessage.startsWith('Success') ? 'text-emerald-400' : 'text-rose-400'}`}>
+                    {resultMessage}
+                  </p>
+                )}
               </form>
             )}
           </div>
