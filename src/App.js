@@ -270,7 +270,7 @@ def handle_event(payload):
     e.preventDefault();
     const formData = new FormData(e.target);
     formData.append('access_key', '0308ff1c-58bf-42e9-8f02-865eb1e9415a');
-
+    console.log('Submitting booking form with data:', Object.fromEntries(formData.entries()));
     try {
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
@@ -1106,6 +1106,7 @@ def handle_event(payload):
                     <label className="block text-xs font-semibold text-slate-400 uppercase mb-2">Your Name</label>
                     <input 
                       type="text" 
+                      name="name"
                       value={bookingName}
                       onChange={(e) => setBookingName(e.target.value)}
                       required
@@ -1118,6 +1119,7 @@ def handle_event(payload):
                     <label className="block text-xs font-semibold text-slate-400 uppercase mb-2">Corporate Email</label>
                     <input 
                       type="email" 
+                      name="email"
                       value={bookingEmail}
                       onChange={(e) => setBookingEmail(e.target.value)}
                       required
@@ -1132,6 +1134,7 @@ def handle_event(payload):
                   <label className="block text-xs font-semibold text-slate-400 uppercase mb-2">Workflow Bottleneck Details (Optional)</label>
                   <textarea 
                     rows="3"
+                    name="message"
                     value={bookingMessage}
                     onChange={(e) => setBookingMessage(e.target.value)}
                     placeholder="Describe your manual operational process. e.g. 'We spend 10 hours a week extracting transaction confirmation emails into Salesforce...'"
